@@ -1,18 +1,16 @@
-import fastify from 'fastify';
+import Fastify from 'fastify';
 import { config } from 'dotenv';
+import allRoutes from './routes';
 
 config();
 
 export const { APP_PORT } = process.env as Record<string, string | number>;
 
-const server = fastify();
+const fastify = Fastify();
 
-server.get('/ping', async (req, reply) => {
-  return 'pong!';
-});
+fastify.register(allRoutes);
 
-server.listen(APP_PORT, (err, address) => {
-  console.log('server', err, address);
+fastify.listen(APP_PORT, (err, address) => {
   if (err) {
     console.log(err);
     process.exit(1);
