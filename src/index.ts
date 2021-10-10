@@ -1,7 +1,9 @@
 import Fastify from 'fastify';
 import { config } from 'dotenv';
 import allRoutes from './routes';
-import { MongoClient } from 'mongodb';
+import mongo, { MongoClient } from 'mongodb';
+import multipart from 'fastify-multipart';
+import { Mongo } from './mongo/mongo';
 
 config();
 
@@ -10,13 +12,11 @@ const {
   MONGODB_URI
 } = process.env as Record<string, string | number>;
 
-const fastify = Fastify();
+const fastify = Fastify()
+  .register(multipart)
+  .register(allRoutes);
 
-fastify.register(allRoutes);
-
-const mongoClient = new MongoClient(MONGODB_URI as string);
-
-mongoClient.connect().then(() => {
+Mongo.connect(MONGODB_URI as string).then(() => {
   fastify.listen(APP_PORT, (err, address) => {
     if (err) {
       console.log(err);
@@ -24,7 +24,4 @@ mongoClient.connect().then(() => {
     }
     console.log(`Server listening at ${address}`);
   });
-}).catch((err) => {
-  console.log(err);
-  process.exit(1);
 });
