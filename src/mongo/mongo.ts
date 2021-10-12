@@ -1,7 +1,8 @@
-import { Collection, Db, MongoClient } from 'mongodb';
+import { Collection, Db, MongoClient, GridFSBucket } from 'mongodb';
 
 export class Mongo {
-  static db: Db | undefined;
+  static db: Db;
+  static bucket: GridFSBucket;
 
   static collection(name: string): Collection | undefined {
     return Mongo.db?.collection(name);
@@ -11,5 +12,6 @@ export class Mongo {
     const client = new MongoClient(uri);
     await client.connect();
     Mongo.db = client.db();
+    Mongo.bucket = new GridFSBucket(Mongo.db, { bucketName: 'files' });
   }
 }
