@@ -58,8 +58,10 @@ const routes = async (fastify: FastifyInstance) => {
     });
   });
 
-  fastify.delete('/file', async () => {
-    return { success: true, msg: 'DELETE file' };
+  fastify.delete('/file/:id', async (req, reply) => {
+    const { id } = req.params as any;
+    await Mongo.bucket.delete(new ObjectId(id));
+    return { success: true, msg: 'The file has been removed' };
   });
 };
 
