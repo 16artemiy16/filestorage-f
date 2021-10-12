@@ -1,16 +1,13 @@
 import { FastifyInstance } from 'fastify/types/instance';
 import fp from 'fastify-plugin';
-import { Mongo } from '../mongo/mongo';
 import { Readable } from 'stream';
-import { ObjectId } from 'mongodb';
+import filesService from '../services/files.service';
 
 const routes = async (fastify: FastifyInstance) => {
   fastify.get('/file/:id', async (req, reply) => {
     const { id } = req.params as any;
-    const objectId = new ObjectId(id);
-    const file = await Mongo.bucket.find({ _id: objectId })
-      .toArray()
-      .then((files) => files[0]);
+
+    const file = await filesService.getById(id);
 
     if (!file) {
       return reply.code(404).send({
@@ -23,7 +20,7 @@ const routes = async (fastify: FastifyInstance) => {
       return reply.code(404).send({ success: false, msg: 'The content type is not set for the file' });
     }
 
-    const downloadStream = Mongo.bucket.openDownloadStream(objectId);
+    const downloadStream = filesService.openDownloadStream(id);
 
     return reply.type(file.contentType).send(downloadStream);
   });
@@ -38,7 +35,7 @@ const routes = async (fastify: FastifyInstance) => {
     readablePhotoStream.push(buff);
     readablePhotoStream.push(null);
 
-    const uploadStream = Mongo.bucket.openUploadStream(filename, { contentType: mimetype });
+    const uploadStream = filesService.openUploadStream(filename, { contentType: mimetype });
     const fileId = uploadStream.id;
 
     readablePhotoStream.pipe(uploadStream);
@@ -60,7 +57,7 @@ const routes = async (fastify: FastifyInstance) => {
 
   fastify.delete('/file/:id', async (req, reply) => {
     const { id } = req.params as any;
-    await Mongo.bucket.delete(new ObjectId(id));
+    await filesService.delete(id);
     return { success: true, msg: 'The file has been removed' };
   });
 };
