@@ -1,7 +1,7 @@
-import filesService from '../services/files.service';
 import { FastifyRequest } from 'fastify/types/request';
 import { FastifyReply } from 'fastify/types/reply';
 import { Readable } from 'stream';
+import filesService from '@services/files.service';
 
 export const getById = async (req: FastifyRequest, reply: FastifyReply) => {
   const { id } = req.params as any;

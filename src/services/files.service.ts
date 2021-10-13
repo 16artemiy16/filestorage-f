@@ -4,8 +4,8 @@ import {
   GridFSBucketWriteStreamOptions,
   ObjectId
 } from 'mongodb';
-import { Mongo } from '../mongo/mongo';
-import isString from '../utils/is-string.util';
+import { MongoService } from '@services/mongo.service';
+import isString from '@utils/is-string.util';
 
 type ID = string | ObjectId;
 
@@ -23,23 +23,23 @@ class FilesService {
 
   async getById(id: ID): Promise<any> {
     const _id = isString(id) ? new ObjectId(id) : id as ObjectId;
-    return await Mongo.bucket.find({ _id })
+    return await MongoService.bucket.find({ _id })
       .toArray()
       .then((items) => items[0]);
   }
 
   async delete(id: ID): Promise<any> {
     const _id = isString(id) ? new ObjectId(id) : id as ObjectId;
-    return await Mongo.bucket.delete(_id);
+    return await MongoService.bucket.delete(_id);
   }
 
   openDownloadStream(id: ID, options?: GridFSBucketReadStreamOptions): GridFSBucketReadStream {
     const _id = isString(id) ? new ObjectId(id) : id as ObjectId;
-    return Mongo.bucket.openDownloadStream(_id, options);
+    return MongoService.bucket.openDownloadStream(_id, options);
   }
 
   openUploadStream(filename: string, options?: GridFSBucketWriteStreamOptions): GridFSBucketWriteStream {
-    return Mongo.bucket.openUploadStream(filename, options);
+    return MongoService.bucket.openUploadStream(filename, options);
   }
 }
 

@@ -4,6 +4,7 @@
     "fastify": "^3.22.0",
     "fastify-multipart": "^5.0.2",
     "fastify-plugin": "^3.0.0",
+    "module-alias": "^2.2.2",
     "mongodb": "^4.1.3"
   },
   "name": "filestorage-f",
@@ -31,5 +32,12 @@
     "url": "https://github.com/16artemiy16/filestorage-f/issues"
   },
   "homepage": "https://github.com/16artemiy16/filestorage-f#readme",
-  "description": ""
+  "description": "",
+  "_moduleAliases": {
+    "@root": "./src",
+    "@controllers": "./src/controllers",
+    "@routes": "./src/routes",
+    "@services": "./src/services",
+    "@utils": "./src/utils"
+  }
 }
